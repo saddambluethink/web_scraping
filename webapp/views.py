@@ -68,33 +68,51 @@ def amazon(request):
         driver.find_element_by_id('twotabsearchtextbox').send_keys(sr)
         time.sleep(5)
         driver.find_element_by_xpath('/html/body/div[1]/header/div/div[1]/div[2]/div/form/div[3]/div/span/input').click()
+        curl=driver.current_url
+        print('current_url============-----gggggggggg--------::',curl)
         time.sleep(15)
-    
+          # for get total page
+        # page=driver.find_element_by_class_name('a-pagination')
+        # page=page.find_element_by_xpath('')
+        # tp=page.text
+        #print("total page===========================",tp)
         data = driver.find_elements_by_class_name('s-asin')
         print("total",len(data))
         name=[]
         price=[]
         image=[]
-    
-        for data in driver.find_elements_by_class_name('s-asin'):
-            if data.find_element_by_class_name('a-size-medium ') and data.find_element_by_class_name('a-price-whole'):
-                    
-                n=data.find_element_by_class_name('a-size-medium ')
-                n=n.text
-                #l=n.split('-')
-                name.append(n)
-                #color.append(l[1])
-                p=data.find_element_by_class_name('a-price-whole')
-                price.append(p.text)
-                img=data.find_element_by_tag_name('img').get_attribute('src')
-                image.append(img)
+        tp=driver.find_elements_by_class_name('a-disabled')
+        print('========page=====',tp[-1].text)
+        pages=int(tp[-1].text)
+        for page in range(1,pages):
+            print("page====================",page)
+            for data in driver.find_elements_by_class_name('s-asin'):
+                try:
+                
+                    n=data.find_element_by_class_name('a-size-medium ')
+                    n=n.text
+                    p=data.find_element_by_class_name('a-price-whole')
+                    ps=p.text
+                    img=data.find_element_by_tag_name('img').get_attribute('src')
+                    print('===',n)
+                    print(type(n))
+                    name.append(n) 
+                    #l=n.split('-')
+                    #color.append(l[1])
+                    price.append(ps)
+                    image.append(img)
+                except:
+                    print("not avalaible")
+            
+            driver.find_element_by_partial_link_text('Next').click()
+            time.sleep(2)
 
-                #print("data======",name.text,"price",price.text,"image",img)
-            else:
-                print("data sorted 1")
-        df=pd.DataFrame({"name":name,"price":price,"img":img})
+
+
+
+        df=pd.DataFrame({"name":name,"price":price,"img":image})
         print(df)
-        df.to_csv('myfile3.csv')
+        df.to_csv(f'{sr}.csv')
         print("----------------------------end====================")
         driver.close() 
     return render(request,'index.html')
@@ -127,5 +145,6 @@ def justdial(request):
     url="https://www.justdial.com/"    
     driver.get(url) 
     time.sleep(20)
+    driver.find_elements_by_class_name('cntanr')
 
     #driver.close() 
