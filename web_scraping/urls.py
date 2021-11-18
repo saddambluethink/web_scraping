@@ -20,6 +20,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     #path('whatsapp',views.whatsapp,name='whatsapp'),
     path('google',views.webscrap, name="webscrab"),
-    path('',views.amazon,name="amazon"),
+    path('amazon',views.amazon,name="amazon"),
     path('justdial',views.justdial,name="justdial"),
+    path('',views.cardekho,name="cardekho"),
 ]

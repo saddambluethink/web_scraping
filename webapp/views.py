@@ -1,3 +1,5 @@
+from re import search
+from django.conf.urls import url
 import selenium
 from django.shortcuts import render,redirect,HttpResponse
 from selenium import webdriver  #install webdriver-manager
@@ -6,6 +8,123 @@ import time
 from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
 # Create your views here.
+
+
+
+def cardekho(request):
+    #search=request.POST['search']
+    search="Hyundai"
+    driver = webdriver.Chrome(ChromeDriverManager().install()) 
+    url="https://www.cardekho.com/" 
+    #url='https://www.cardekho.com/cars/Mahindra'
+    driver.get(url)
+    
+    # driver.find_element_by_id('cardekhosearchtext').send_keys()
+    # time.sleep(1)
+    # driver.find_element_by_xpath('//*[@id="rf01"]/header/div[1]/div/div/div[2]/div/div/form/button').click()
+    driver.find_element_by_xpath('//*[@id="rf01"]/header/div[2]/div/div/nav/ul/li[1]/a').click()
+    # curl=driver.current_url
+    # print('current_url============-----gggggggggg----gsc_col-lg-2----::',curl)
+    print("===================start1===============")
+    time.sleep(5)
+    driver.find_element_by_xpath('//*[@id="brands"]/div/div[2]/div[1]/div/span').click()
+    time.sleep(5)
+    cars=driver.find_element_by_class_name('listing')
+    #print(type(cars),"--",cars.text,"-")
+    li=cars.find_elements_by_tag_name('li')
+    #print("====li=====",li)
+    car_names=[]
+    car_price=[]
+    car_f=[]
+    car_image=[]
+    for i in li:
+        if i.text==search:
+            i.click()
+            time.sleep(10)
+            carss=driver.find_elements_by_class_name('shadowWPadding')
+            print("total cars:",len(carss))
+            
+            for car in carss:
+                try:
+                   
+                    price=car.find_element_by_class_name('price')
+                    p=price.text.split('*')
+                    car_name=car.find_element_by_tag_name('a')
+                    c=car_name.text
+                    image=car.find_element_by_tag_name('img').get_attribute('src')
+                    features=car.find_element_by_class_name('clearfix')
+                    f=features.text
+                            # append data
+                    car_names.append(c)
+                    car_price.append(p[0])
+                    car_f.append(f)
+                    car_image.append(image)
+                   
+                    print("price",p[0],"name",car_name.text,"featuress",features.text,image)
+                except:
+                    print("except====================")
+            
+            print("make data frame data")
+            df=pd.DataFrame({"name":car_names,"price":car_price,"img":car_image,"featuress":car_f})
+            print("***********************data frame:",df)
+            df.to_csv(f'{search}_data.csv')
+           
+            driver.close() 
+            return HttpResponse("data scrap successfully")    
+       
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
