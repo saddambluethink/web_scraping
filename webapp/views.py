@@ -18,7 +18,9 @@ def cardekho(request):
     url="https://www.cardekho.com/" 
     #url='https://www.cardekho.com/cars/Mahindra'
     driver.get(url)
-    
+    #driver.implicitly_wait(10) # seconds
+   # wait=WebDriverWait(driver, 10)
+   # wait.until(EC.presence_of_element_located((By.ID, 'cardekhosearchtext')))
     # driver.find_element_by_id('cardekhosearchtext').send_keys()
     # time.sleep(1)
     # driver.find_element_by_xpath('//*[@id="rf01"]/header/div[1]/div/div/div[2]/div/div/form/button').click()
